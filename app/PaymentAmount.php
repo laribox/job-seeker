@@ -8,7 +8,12 @@ enum PaymentAmount
     case MONTHLY;
     case YEARLY;
 
-    public function name(): string
+    /**
+     * Returns the amount based on the current instance value.
+     *
+     * @return string The amount as a string.
+     */
+    public function amout(): string
     {
         return match ($this) {
             self::WEEKLY => 20,
