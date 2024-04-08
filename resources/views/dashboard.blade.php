@@ -6,7 +6,7 @@
     @include('utils.alerts')
     <div class="row justify-content-center">
         <p class="lead text-center">Hello, {{auth()->user()->name}} </p>
-        @if (auth()->user()->type == 'employer')
+        @if (auth()->user()->type == 'employer' && auth()->user()->trial != null)
         <p>Your trial will expire on {{auth()->user()->trial}}</p>
         @endif
 

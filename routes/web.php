@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PostJobController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\UsersController;
+use App\Http\Middleware\isAlreadySubscribed;
 use App\Http\Middleware\isEmployer;
+use App\Http\Middleware\isPremiumUser;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -36,7 +39,13 @@ Route::post('/logout', [UsersController::class, 'logout'])->name('logout');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware(['auth', 'verified']);
 Route::get('/verify', [DashboardController::class, 'verify'])->name('verification.notice');
 
-Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions')->middleware(['auth', 'verified', isEmployer::class]);
-Route::get('/weekly-subscriptions', [SubscriptionController::class, 'payment'])->name('weekly')->middleware(['auth', 'verified', isEmployer::class]);
-Route::get('/monthly-subscriptions', [SubscriptionController::class, 'payment'])->name('monthly')->middleware(['auth', 'verified', isEmployer::class]);
-Route::get('/yearly-subscriptions', [SubscriptionController::class, 'payment'])->name('yearly')->middleware(['auth', 'verified', isEmployer::class]);
+Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions')->middleware(['auth', 'verified', isEmployer::class, isAlreadySubscribed::class]);
+Route::get('/weekly-subscriptions', [SubscriptionController::class, 'payment'])->name('weekly')->middleware(['auth', 'verified', isEmployer::class, isAlreadySubscribed::class]);
+Route::get('/monthly-subscriptions', [SubscriptionController::class, 'payment'])->name('monthly')->middleware(['auth', 'verified', isEmployer::class, isAlreadySubscribed::class]);
+Route::get('/yearly-subscriptions', [SubscriptionController::class, 'payment'])->name('yearly')->middleware(['auth', 'verified', isEmployer::class, isAlreadySubscribed::class]);
+
+Route::get('/success', [SubscriptionController::class, 'success'])->name('success')->middleware(['auth', 'verified', isEmployer::class]);
+Route::get('/cancel', [SubscriptionController::class, 'cancel'])->name('cancel')->middleware(['auth', 'verified', isEmployer::class]);
+
+
+Route::get('job/create', [PostJobController::class, 'create'])->name('job.create')->middleware(['auth', 'verified', isEmployer::class, isPremiumUser::class]);

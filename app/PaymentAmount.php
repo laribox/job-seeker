@@ -13,7 +13,7 @@ enum PaymentAmount
      *
      * @return string The amount as a string.
      */
-    public function amout(): string
+    public function amount(): string
     {
         return match ($this) {
             self::WEEKLY => 20,
